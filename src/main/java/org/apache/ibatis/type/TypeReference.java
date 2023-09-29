@@ -19,6 +19,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
+ * 类型处理器可以处理不同Java类型的数据，而这些类型处理器都是TypeHandler接口的子类，因此都可以作为TypeHandler来使用
+ *
+ * 当Mybatis取到栽一个TypeHandler时, 却不知道它到底是用来处理哪一种Java类型的处理器?
+ * TypeReference 能够判断出一个TypeHandler用来处理的目标类型, 而它判断的方法也很简单
+ * 取出TypeHandler实现类中的泛型 T 的类型, 这个值的类型也便是该 TypeHandler能处理的目标类型, 该功能由getSuperclassTypeParameter方法实现
+ * 该方法能够找出目标类型存入类的 rawType属性
+ */
+
+/**
  * References a generic type.
  *
  * @param <T> the referenced type
@@ -33,7 +42,13 @@ public abstract class TypeReference<T> {
     rawType = getSuperclassTypeParameter(getClass());
   }
 
+  /**
+   * 解析出当前TypeHandler实现类能够处理的目标类型
+   * @param clazz typeHandler实现类
+   * @return 该typeHandler实现类能够处理的目标类型
+   */
   Type getSuperclassTypeParameter(Class<?> clazz) {
+    //获取clazz类的有带有泛型的直接父类
     Type genericSuperclass = clazz.getGenericSuperclass();
     if (genericSuperclass instanceof Class) {
       // try to climb up the hierarchy until meet something useful

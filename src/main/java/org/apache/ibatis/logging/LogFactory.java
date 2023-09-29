@@ -18,6 +18,11 @@ package org.apache.ibatis.logging;
 import java.lang.reflect.Constructor;
 
 /**
+ * LogFactory 日志的工厂类, 生产具体的日志实现类
+ * 声明为final, 并且构造器为private, 单例的 LogFactory
+ */
+
+/**
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
@@ -30,6 +35,17 @@ public final class LogFactory {
 
   private static Constructor<? extends Log> logConstructor;
 
+  /**
+   * static 静态代码块, 完成初始化
+   * 尝试加载不同的实现类, 这里实现的相当于是实现run方法, 但没有start方法, 并没有新建线程
+   * 加载日志实现类的优先级
+   * 1. slf4j
+   * 2. commons logging
+   * 3. log4j2
+   * 4. log4j
+   * 5. jdk log
+   * 6. no log
+   */
   static {
     tryImplementation(new Runnable() {
       @Override
@@ -117,6 +133,10 @@ public final class LogFactory {
     setImplementation(org.apache.ibatis.logging.nologging.NoLoggingImpl.class);
   }
 
+  /**
+   * 尝试加载实现类, 最终调用的是run()方法
+   * @param runnable
+   */
   private static void tryImplementation(Runnable runnable) {
     if (logConstructor == null) {
       try {
@@ -127,6 +147,10 @@ public final class LogFactory {
     }
   }
 
+  /**
+   * 通过反射, 构造器反射构造具体的实现类
+   * @param implClass
+   */
   private static void setImplementation(Class<? extends Log> implClass) {
     try {
       Constructor<? extends Log> candidate = implClass.getConstructor(String.class);

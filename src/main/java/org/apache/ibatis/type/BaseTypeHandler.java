@@ -24,6 +24,10 @@ import org.apache.ibatis.executor.result.ResultMapException;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * BaseTypeHandler  类型处理器的基类, 采用模板方法设计
+ */
+
+/**
  * @author Clinton Begin
  * @author Simone Tripodi
  */
@@ -104,12 +108,16 @@ public abstract class BaseTypeHandler<T> extends TypeReference<T> implements Typ
     }
   }
 
+  //向PreparedStatement对象中的指定变量位置写入一个不为null的值
   public abstract void setNonNullParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException;
 
+  //从 ResultSet中按照字段名读出一个可能为null的数据
   public abstract T getNullableResult(ResultSet rs, String columnName) throws SQLException;
 
+  //从 ResultSet中按照字段index讯出一个可能为null的数据
   public abstract T getNullableResult(ResultSet rs, int columnIndex) throws SQLException;
 
+  //从 CallableStatement 中按照index读出一个可能为null的数据
   public abstract T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException;
 
 }

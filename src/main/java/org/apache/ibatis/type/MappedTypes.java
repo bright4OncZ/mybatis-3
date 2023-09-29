@@ -22,6 +22,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 自定义的处理器来处理某些Java类型, 只需创建BaseTypeHandler的子类,
+ * 然后在上面加上该注解, 声明它要处理的Java类型即可
+ */
+
+/**
  * @author Eduardo Macarron
  */
 @Documented

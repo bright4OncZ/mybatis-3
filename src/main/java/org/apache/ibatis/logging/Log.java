@@ -15,6 +15,11 @@
  */
 package org.apache.ibatis.logging;
 
+
+/**
+ * Log 日志的统一接口, 对接提供的接口, 封装详细的实现类
+ */
+
 /**
  * @author Clinton Begin
  */

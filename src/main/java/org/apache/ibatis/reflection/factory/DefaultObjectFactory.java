@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import org.apache.ibatis.reflection.ReflectionException;
 
 /**
+ * 继承自ObjectFactory, 是默认的对象工厂实现
  * @author Clinton Begin
  */
 public class DefaultObjectFactory implements ObjectFactory, Serializable {
@@ -55,22 +56,36 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     // no props for default
   }
 
+  /**
+   * 创建类的实例
+   * @param type 要创建实例的类
+   * @param constructorArgTypes 构造方法输入参数类型
+   * @param constructorArgs 构造方法输入参数
+   * @return 创建的实例
+   * @param <T> 实例类型
+   */
   private  <T> T instantiateClass(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
     try {
+      //构造方法
       Constructor<T> constructor;
+      //参数列表类型为null 或 参数列表为null
       if (constructorArgTypes == null || constructorArgs == null) {
+        // 获取无参构造函数
         constructor = type.getDeclaredConstructor();
+        //修改构造函数的访问属性
         if (!constructor.isAccessible()) {
           constructor.setAccessible(true);
         }
         return constructor.newInstance();
       }
+      // 根据输入参数类型查找对应的构造器
       constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[constructorArgTypes.size()]));
       if (!constructor.isAccessible()) {
         constructor.setAccessible(true);
       }
       return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
     } catch (Exception e) {
+      // 收集所有的参数类型
       StringBuilder argTypes = new StringBuilder();
       if (constructorArgTypes != null && !constructorArgTypes.isEmpty()) {
         for (Class<?> argType : constructorArgTypes) {
@@ -79,6 +94,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
         }
         argTypes.deleteCharAt(argTypes.length() - 1); // remove trailing ,
       }
+      //收集所有的参数
       StringBuilder argValues = new StringBuilder();
       if (constructorArgs != null && !constructorArgs.isEmpty()) {
         for (Object argValue : constructorArgs) {
@@ -91,6 +107,16 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     }
   }
 
+  /**
+   * 传入类型                      得到的类型
+   * List/Collection/Iterable     ArrayList
+   * Map                          HashMap
+   * SortedSet                    TreeSet
+   * Set                          HashSet
+   *
+   * @param type 传入的目标类型
+   * @return 返回一个符合该接口的实现
+   */
   protected Class<?> resolveInterface(Class<?> type) {
     Class<?> classToCreate;
     if (type == List.class || type == Collection.class || type == Iterable.class) {

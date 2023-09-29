@@ -18,6 +18,8 @@ package org.apache.ibatis.reflection.property;
 import java.lang.reflect.Field;
 
 /**
+ * 属性复制器PropertyCopier 对外提供static方法
+ * 类用final修饰, 构造器用private修饰
  * @author Clinton Begin
  */
 public final class PropertyCopier {
@@ -26,11 +28,21 @@ public final class PropertyCopier {
     // Prevent Instantiation of Static Class
   }
 
+  /**
+   * 完成对象的属性复制
+   *
+   * @param type            对象的类型
+   * @param sourceBean      提供属性值的对象
+   * @param destinationBean 要被写入新属性值的对象
+   */
   public static void copyBeanProperties(Class<?> type, Object sourceBean, Object destinationBean) {
+    // 两个对象同属的类
     Class<?> parent = type;
     while (parent != null) {
+      // 获取该类的所有属性, getDeclaredFields 不包含从父类继承来的属性
       final Field[] fields = parent.getDeclaredFields();
-      for(Field field : fields) {
+      // 循环遍历属性进行复制
+      for (Field field : fields) {
         try {
           field.setAccessible(true);
           field.set(destinationBean, field.get(sourceBean));

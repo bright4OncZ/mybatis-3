@@ -18,6 +18,10 @@ package org.apache.ibatis.logging;
 import org.apache.ibatis.exceptions.PersistenceException;
 
 /**
+ * 封装日志的异常类
+ */
+
+/**
  * @author Clinton Begin
  */
 public class LogException extends PersistenceException {

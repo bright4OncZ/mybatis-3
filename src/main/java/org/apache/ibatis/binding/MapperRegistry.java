@@ -27,19 +27,29 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * MapperRegistry
+ * 启动的时候读取Configuration配置文件和解析Mapper文件之后, 将创建好的代码的Mapper放进knownMappers中备用
+ */
+
+/**
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss
  */
 public class MapperRegistry {
 
+  // 全局配置解析类 configuration.xml 文件解析出来的内容, 全部都放在这里
   private final Configuration config;
+
+  // Map 结构, key为类型, value 为mapper接口的代理工厂类
   private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<Class<?>, MapperProxyFactory<?>>();
 
+  // 构造方法
   public MapperRegistry(Configuration config) {
     this.config = config;
   }
 
+  // 根据type从knownMappers中取, 如果没有则调用mapperProxyFactory工厂类创建此mapper接口的proxy
   @SuppressWarnings("unchecked")
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);

@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * 负责对象target其他方法的操作
  * @author Clinton Begin
  */
 public class MethodInvoker implements Invoker {
@@ -30,8 +31,10 @@ public class MethodInvoker implements Invoker {
     this.method = method;
 
     if (method.getParameterTypes().length == 1) {
+      // 有且只有一个输入参数时， type为输入参数类型
       type = method.getParameterTypes()[0];
     } else {
+      // 否则type为输出参数类型
       type = method.getReturnType();
     }
   }

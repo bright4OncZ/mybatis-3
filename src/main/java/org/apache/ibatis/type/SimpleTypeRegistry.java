@@ -22,12 +22,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 处理基础数据类型 simpleTypeRegistry
+ * 内部使用Set维护了所有Java基本数据类型的集合
+ */
+
+/**
  * @author Clinton Begin
  */
 public class SimpleTypeRegistry {
 
   private static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<Class<?>>();
 
+  // static 代码块中进行数据的初始化
   static {
     SIMPLE_TYPE_SET.add(String.class);
     SIMPLE_TYPE_SET.add(Byte.class);
@@ -44,6 +50,7 @@ public class SimpleTypeRegistry {
     SIMPLE_TYPE_SET.add(BigDecimal.class);
   }
 
+  //同时将构造方法置为private私有
   private SimpleTypeRegistry() {
     // Prevent Instantiation
   }
